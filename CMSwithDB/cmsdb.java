@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import oracle.net.aso.s;
-
 public class cmsdb {
 	//전역 변수들 선언
 	static String driver = "oracle.jdbc.driver.OracleDriver";
