@@ -20,21 +20,21 @@ public class Client_Info {
 			
 			while(true) {
 				
-				String str = Client_Info_view(); 
+				String str = Client_Info_view();
 				
 				switch(str) {
-					case "I" : //신규고객 저장
+					case "I" : //신규 고객 저장
 							InsertEx();
 							System.out.println("고객이 저장되었습니다.");
 							break;
 							
-					case "S" : //고객검색
+					case "S" : //고객 검색
 							SearchEx();
 							break;
 							
 					case "P" : //이전 고객 검색
 							if (nNum==0 || nNum-1 <= 0) {
-								System.out.println("찾으시는 전 고객은 없습니다.");
+								System.out.println("찾으시는 이전 고객은 없습니다.");
 								}
 							else {
 								 prev_SearchEx("P");
@@ -44,20 +44,18 @@ public class Client_Info {
 					case "N": //다음 고객 검색
 							prev_SearchEx("N");
 							break;
-								
+							
 					case "D" :
 							if (rowcount > 1 ) {
-								System.out.println(" 다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
+								System.out.println("다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
 								} else {
-									if (nNum == 0 || nNum <=0 ) {
-										System.out.println(" 삭제하고자  하는 고객이 없습니다.");
+									if (nNum == 0||nNum <=0) {
+										System.out.println(" 삭제하려는 고객이 없습니다.");
 										}else {
 											DeleteEx();
 										}
 								}
 							break;
-							 
-					
 					case "U" : 
 						   if (rowcount > 1 )System.out.println(" 다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
 						   else {
@@ -94,7 +92,7 @@ public class Client_Info {
 		  	
 		  	String str = scan.next().toUpperCase().trim(); // 해당값을 무조건 대문자로 바꾸어준다.
 		  	boolean chk = false;
-		    chk = memuCheck(str);
+		    chk = menuCheck(str);
 		    
 	       if (chk == false) {
 				System.out.println("작업 메뉴에 없는 호출정보입니다. 다시 입력해주세요.");				
@@ -103,7 +101,7 @@ public class Client_Info {
 	       return str;
 		}
 		
-		public static boolean memuCheck(String str) {//입력받은 메뉴 실행
+		public static boolean menuCheck(String str) {//입력받은 메뉴 실행
 			  	//null check / 메뉴 범위에 있는 값들인지/ check 하여 true 혹은 false을 반환한다.
 			  	if (str == null||str == ""|| str.length() >2|| str.length()<= 0) {
 			  		return false;
@@ -168,12 +166,12 @@ public class Client_Info {
 			}
 			
 									
-			System.out.print(" 이메일을 : ");
+			System.out.print(" 이메일: ");
 			tEmail =scan.nextLine(); 
 				  
 			while (tEmail.isEmpty()) {
 				System.out.println(" 잘못된 정보입니다. 다시 입력해주세요. ");
-				System.out.print(" 이메일을 : ");
+				System.out.print(" 이메일: ");
 				tEmail =scan.nextLine();  
 			} tEmail  = tEmail.toLowerCase();
 					
@@ -211,9 +209,6 @@ public class Client_Info {
 			
 		}
 		
-////////////////////////CUSTOMER INFORMATION INSERT STRART ///////////////////////////////// 
-//////////////////CUSTOMER INFORMATION DELETE START //////////////////////////////////////
-		
 		private static boolean check_Birthyeakr(String tBirthyear) {
 			
 			if (tBirthyear.trim().length()==8){ 			return true; }
@@ -231,9 +226,8 @@ public class Client_Info {
 			
 			else {
 				
-				//삭제하고자 하는 정보를 출력한다/
 				prev_SearchEx("S");
-				//System.out.println(" 해당고객을 삭제 하겠습니까? ");
+				
 				int answer = JOptionPane.showConfirmDialog(null, "해당고객을 정말로 삭제 하겠습니까?", "confirm",JOptionPane.YES_NO_OPTION );
 				
 				if(answer == JOptionPane.YES_OPTION){
@@ -261,24 +255,15 @@ public class Client_Info {
 				} else{
 					//사용자가 Yes 외 값 입력시
 					System.out.println("해당고객을 삭제 하지 않겠습니다.");
-					 
 				}
-				
-
-			}//if문의 end
-				
-				
-}// DeleteEx end
+			}
+		}
 		
-//////////////////CUSTOMER INFORMATION DELETE END //////////////////////////////////////	
-////////////////// CUSTOMER INFORMATION UPDATE START //////////////////////////////////////
- 
 		private static void UpdateEx() {
 			//고객의 정보를 수정합니다.
 			 
 			Connection conn = MakeConnection.getConnection();
 			
-		 	//예외처리를 한다. 
 			if (nNum == 0 || nNum <=0 ) {System.out.println("수정하고자 하는 고객이 없습니다.");}
 			else { 
 					prev_SearchEx("S");
@@ -364,12 +349,6 @@ public class Client_Info {
 		}
 	}
 		
-//////////////////CUSTOMER INFORMATION UPDATE END  //////////////////////////////////////
-		 	
-		
-		
-		////////////////// 예외처리 => 성별  M/F START  //////////////////////////////////////
-			
 		private static boolean check_Gender(String tGender) {
 			tGender = tGender.toUpperCase().trim();
 			if (tGender.length() == 1 ) {
@@ -382,10 +361,6 @@ public class Client_Info {
 			
 		}
 		
-       //////////////////예외처리 => 성별  M/F END  //////////////////////////////////////
-		
-		
-		////////////////// CURRENT / PREV / NEXT CUSTOMER SERARCHING  ////////////////// 
 		private static void prev_SearchEx( String gubun) {
 			// 이전 고객의 값을 가지고 온다
 			Connection conn = MakeConnection.getConnection();
@@ -545,7 +520,6 @@ public class Client_Info {
 				sql = sql ;
 			}
 		  	sql = sql+ " order by cl_id ";
-		  	//System.out.println( sql );
 		  		
 		   	int cl_id=0;
 			String cl_name ="";
@@ -617,6 +591,4 @@ public class Client_Info {
 			 
 			return true;
 		}
-////////////////////Condition SEARCH  ITEM END  /////////////////////////////////////////			
-
-}//Client_Info 클래스 end
+}
