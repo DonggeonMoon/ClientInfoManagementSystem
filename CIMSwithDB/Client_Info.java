@@ -1,4 +1,4 @@
-package JDBC관련;
+package cms_sql;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,144 +8,129 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-
-import javax.swing.JOptionPane; 
+import javax.swing.JOptionPane;
  
 public class Client_Info {
-	  //  static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		static Scanner scan = new Scanner(System.in); //스켄어를 통해 값을 입력을 받을 수 있다.
-		static boolean chk = false;
-		static String  str ="";
-		static int nNum =0;
+	
+		static Scanner scan = new Scanner(System.in);
+		static int nNum = 0;
 		static int rowcount = 0;
 		
-		
-		public static void Client_Info_view()  {  
-				 	
-			  	System.out.println("****************************************");
-				System.out.println(" 	고객정보 UI 화면입니다. ");
-				System.out.println(" 	고객정보 입력 : I   " );
-				System.out.println(" 	고객정보 조회 : S   " );
-				System.out.println(" 	이전고객 조회 : P   " );
-				System.out.println(" 	이후고객 조회 : N   " );
-				System.out.println(" 	고객정보 수정 : U   " );
-				System.out.println(" 	고객정보 삭제 : D   " );
-				System.out.println(" 	프로그램 종료 : Q   " );
-			  	System.out.println("******************************************");
-			  	
-			  	
-			  //여기서 예외처리하자
-			  	str = scan.next();	//해당값을 받아주어야 한다.
-			  	str = str.toUpperCase().trim(); // 해당값을 무조건 대문자로 바꾸어준다.	
-			  	
-			  	
-			    boolean chk = memuCheck( );
-			  	  
-		       if (chk == false  ) {	// 사용할 수 없는 값을 반환한다
-					System.out.println(" 작업 메뉴에 없는 호출정보입니다. 다시 입력해주세요.");				
-					Client_Info_view(); //재귀함수
-					
-		       }
-			  	
-		}
-		
-	
-	
-///////////////////////////MENU 예외처리////////////////////////////////////////
-		public static boolean memuCheck( ) {
-			 
-				//받은 값을  예외처리한다.
-			  	//null check / 메뉴 범위에 있는 값들인지/ check 하여 true 혹은 false을 받환한다.
-			  	if ( str == null || str == ""|| str.length() >2|| str.length()<= 0) return false;  		 		  		 
-			  	
-			  	String arr[] =  { "I", "S","D","U", "Q", "P","N"};
-			  	
-			    if (str.length() == 1) {
-			    	
-				  	for (int i = 0; i < arr.length; i++) {
-						if (str.equals(arr[i])) {  return true;}						 
-				  	}
-				  	return false; 
-			    }
-				return false;
-		}
-		
-	
-	////////////////////////////MAIN 메소드 ////////////////////////////////////////
-		public static void main(String[] args) throws Exception {			
-			 
-			 //고객정보를 관리하고자 한다.
-			 //Client_Info_view(); 
-			  	
-			while(true) { //TRUE인동안
+		public static void main(String[] args) throws Exception {
+			
+			while(true) {
 				
-				Client_Info_view(); 
+				String str = Client_Info_view(); 
 				
 				switch(str) {
 					case "I" : //신규고객 저장
 							InsertEx();
 							System.out.println("고객이 저장되었습니다.");
 							break;
+							
 					case "S" : //고객검색
 							SearchEx();
 							break;
-						 
-					case "P" : //이전고객 검색
-						
-							if (nNum==0 || nNum-1 <= 0) {System.out.println("찾으시는 전 고객은 없습니다."); }
+							
+					case "P" : //이전 고객 검색
+							if (nNum==0 || nNum-1 <= 0) {
+								System.out.println("찾으시는 전 고객은 없습니다.");
+								}
 							else {
 								 prev_SearchEx("P");
-							} 
+							}
 							break;
-					case "N": //이후 고객 검색
-							 
-								prev_SearchEx("N");
-							 
-								break; 
-					case "D" : 
-								 
-							 if (rowcount > 1 ) {
-								 System.out.println(" 다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
-							 } else {
-								   if (nNum == 0 || nNum <=0 ) {
-									   System.out.println(" 삭제하고자  하는 고객이 없습니다.");
-								   }else {
-									   DeleteEx();
-								   }
-							   }
-							 break;
+							
+					case "N": //다음 고객 검색
+							prev_SearchEx("N");
+							break;
+								
+					case "D" :
+							if (rowcount > 1 ) {
+								System.out.println(" 다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
+								} else {
+									if (nNum == 0 || nNum <=0 ) {
+										System.out.println(" 삭제하고자  하는 고객이 없습니다.");
+										}else {
+											DeleteEx();
+										}
+								}
+							break;
 							 
 					
 					case "U" : 
 						   if (rowcount > 1 )System.out.println(" 다수의 고객이 선택되었습니다. 한 고객만 선택해주세요.");
 						   else {
-							   if (nNum == 0 || nNum <=0 ) {System.out.println("수정하고자 하는 고객이 없습니다.");}							 
-							   else { UpdateEx(); System.out.println("고객 정보를 수정하였습니다.");} }
-							break;
+							   if (nNum == 0 || nNum <=0 ) {
+								   System.out.println("수정하고자 하는 고객이 없습니다.");
+								   }							 
+							   else {
+								   UpdateEx(); System.out.println("고객 정보를 수정하였습니다.");
+								   } 
+							   }
+						   break;
 					case "Q" :	
 						 System.out.println("프로그램을 종료합니다.");
 						 System.exit(0);
-							break;							
-						 
+							break;
+							
 					default : 
 							break;
-						}			
 				}
-				
-	
-	}//main 메소드 end
-////////////////////////MAIN METHOD END  ///////////////////////////////////////////////// 			
-////////////////////////CUSTOMER INFORMATION INSERT STRART //////////////////////////////// 	
+			}
+		}
+		
+		public static String Client_Info_view() {//Client_Info의 메뉴 생성
+			System.out.println("****************************************");
+			System.out.println(" 	고객정보 UI 화면입니다. ");
+			System.out.println(" 	고객정보 입력 : I   " );
+			System.out.println(" 	고객정보 조회 : S   " );
+			System.out.println(" 	이전고객 조회 : P   " );
+			System.out.println(" 	이후고객 조회 : N   " );
+			System.out.println(" 	고객정보 수정 : U   " );
+			System.out.println(" 	고객정보 삭제 : D   " );
+			System.out.println(" 	프로그램 종료 : Q   " );
+		  	System.out.println("******************************************");
+		  	
+		  	String str = scan.next().toUpperCase().trim(); // 해당값을 무조건 대문자로 바꾸어준다.
+		  	boolean chk = false;
+		    chk = memuCheck(str);
+		    
+	       if (chk == false) {
+				System.out.println("작업 메뉴에 없는 호출정보입니다. 다시 입력해주세요.");				
+				Client_Info_view(); //재귀함수
+	       }
+	       return str;
+		}
+		
+		public static boolean memuCheck(String str) {//입력받은 메뉴 실행
+			  	//null check / 메뉴 범위에 있는 값들인지/ check 하여 true 혹은 false을 반환한다.
+			  	if (str == null||str == ""|| str.length() >2|| str.length()<= 0) {
+			  		return false;
+			  	}
+			  	String arr[] = {"I", "S", "D", "U", "Q", "P", "N"};
+			  	
+			    if (str.length() == 1) {
+			    	
+				  	for (int i = 0; i < arr.length; i++) {
+						if (str.equals(arr[i])) {
+							return true;
+							}						 
+				  	}
+				  	return false;
+			    }
+				return false;
+		}
+		
 		private static void InsertEx() {
 			//고객의 정보를 수정합니다.
 			 
-			Connection conn = MakeConnection.getConnection(); // makeconnection이란 class의 getconnection메소드란 객체를 생성한
-	
+			Connection conn = MakeConnection.getConnection();//MakeConnection 클래스에서 생성한 getConnection() 메서드를 이용해 접속.
+			
 			String tName ="";
 			String tGender ="";
 			String tBirthyear ="";
 			String tEmail= "";
-			
 			
 			System.out.println(" 고객 정보를 기입해주세요");
 			System.out.print(" 고객 이름  : ");
